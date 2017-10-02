@@ -36,9 +36,9 @@ line := shellwords.Join([]string{"abc", "d e f"})
 
 ```go
 line := shellwords.Escape("./foo 'a b c'")
-line should be `./foo\ \'a\ b\ c\'\"`
+// line should be `./foo\ \'a\ b\ c\'\"`
 ```
 
 ## Thanks
 
-This is based on [go-shellwords](https://github.com/mattn/go-shellwords) and ruby module: (rubysl-shellwords)[https://github.com/rubysl/rubysl-shellwords]
+This is based on [go-shellwords](https://github.com/mattn/go-shellwords) and ruby module: [rubysl-shellwords](https://github.com/rubysl/rubysl-shellwords)
