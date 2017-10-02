@@ -1,4 +1,10 @@
 # shellwords
+
+[![Build Status](https://travis-ci.org/Wing924/shellwords.svg?branch=master)](https://travis-ci.org/Wing924/shellwords)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Wing924/shellwords)](https://goreportcard.com/report/github.com/Wing924/shellwords)
+[![codecov](https://codecov.io/gh/Wing924/shellwords/branch/master/graph/badge.svg)](https://codecov.io/gh/Wing924/shellwords)
+[![GoDoc](https://godoc.org/github.com/Wing924/shellwords?status.svg)](https://godoc.org/github.com/Wing924/shellwords)
+
 A Golang library to manipulate strings according to the word parsing rules of the UNIX Bourne shell.
 
 
