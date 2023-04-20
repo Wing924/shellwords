@@ -14,14 +14,19 @@ type testCase struct {
 
 func TestSplitString(t *testing.T) {
 	testCases := map[string]testCase{
-		`a "b b" a`:      {[]string{"a", "b b", "a"}, "quoted strings"},
-		`a "'b' c" d`:    {[]string{"a", "'b' c", "d"}, "escaped double quotes"},
-		`a '"b" c' d`:    {[]string{"a", `"b" c`, "d"}, "escaped single quotes"},
-		`a b\ c d`:       {[]string{"a", "b c", "d"}, "escaped spaces"},
-		`a   b\ c d`:     {[]string{"a", "b c", "d"}, "extra spaces in seplator"},
-		`   a b\ c d`:    {[]string{"a", "b c", "d"}, "extra leading spaces"},
-		`a b\ c d   `:    {[]string{"a", "b c", "d"}, "extra tailing spaces"},
-		"a 'aa\nbb\ncc'": {[]string{"a", "aa\nbb\ncc"}, "multi-line"},
+		`a "b b" a`:                   {[]string{"a", "b b", "a"}, "quoted strings"},
+		`a "'b' c" d`:                 {[]string{"a", "'b' c", "d"}, "escaped double quotes"},
+		`a '"b" c' d`:                 {[]string{"a", `"b" c`, "d"}, "escaped single quotes"},
+		`a b\ c d`:                    {[]string{"a", "b c", "d"}, "escaped spaces"},
+		`a   b\ c d`:                  {[]string{"a", "b c", "d"}, "extra spaces in separator"},
+		`   a b\ c d`:                 {[]string{"a", "b c", "d"}, "extra leading spaces"},
+		`a b\ c d   `:                 {[]string{"a", "b c", "d"}, "extra tailing spaces"},
+		"a 'aa\nbb\ncc'":              {[]string{"a", "aa\nbb\ncc"}, "multi-line"},
+		"echo 1 | cat > 'test 1.txt'": {[]string{"echo", "1", "|", "cat", ">", "test 1.txt"}, "pipe"},
+		`cat > a.txt <<EOH
+abc
+123
+EOH`: {[]string{"cat", ">", "a.txt", "<<EOH", "abc", "123", "EOH"}, "heredoc"},
 	}
 	errorCases := []string{
 		`a "b c d e`,
@@ -30,13 +35,17 @@ func TestSplitString(t *testing.T) {
 	}
 
 	for input, res := range testCases {
-		actual, err := Split(input)
-		assert.NoError(t, err)
-		assert.Equal(t, res.expected, actual, res.message)
+		t.Run(res.message, func(t *testing.T) {
+			actual, err := Split(input)
+			assert.NoError(t, err)
+			assert.Equal(t, res.expected, actual, res.message)
+		})
 	}
 	for _, input := range errorCases {
-		_, err := Split(input)
-		assert.Error(t, err)
+		t.Run(input, func(t *testing.T) {
+			_, err := Split(input)
+			assert.Error(t, err)
+		})
 	}
 }
 

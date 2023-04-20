@@ -2,14 +2,56 @@ package shellwords
 
 import (
 	"bytes"
+	"errors"
+	"fmt"
 	"regexp"
+)
 
-	sw "github.com/mattn/go-shellwords"
+var (
+	reSplit     = regexp.MustCompile(`(?m)^\s*(?:(?P<word>[^\s\\'"]+)|'(?P<sq>[^']*)'|"(?P<dq>(?:[^"\\]|\\.)*)"|(?P<esc>\\.?)|(?P<garbage>\S))(?P<sep>\s+|\z)?`)
+	reEscapeDq  = regexp.MustCompile(`\\([$"\\\n` + "`" + `])`)
+	reEscapeEsc = regexp.MustCompile(`\\(.)`)
 )
 
 // Split a string into an array of tokens in the same way the UNIX Bourne shell does.
 func Split(line string) ([]string, error) {
-	return sw.Parse(line)
+	var words []string
+	var field bytes.Buffer
+	for line != "" {
+		m := reSplit.FindStringSubmatch(line)
+		if len(m) != 7 {
+			return nil, errors.New("unmatched")
+		}
+		var (
+			word    = m[1]
+			sq      = m[2]
+			dq      = m[3]
+			esc     = m[4]
+			garbage = m[5]
+			sep     = m[6]
+		)
+		if garbage != "" {
+			return nil, fmt.Errorf("unmatched quote: %s", line)
+		}
+		switch {
+		case word != "":
+			field.WriteString(word)
+		case sq != "":
+			field.WriteString(sq)
+		case dq != "":
+			dq = reEscapeDq.ReplaceAllString(dq, "$1")
+			field.WriteString(dq)
+		case esc != "":
+			esc = reEscapeEsc.ReplaceAllString(esc, "$1")
+			field.WriteString(esc)
+		}
+		line = line[len(m[0]):]
+		if sep != "" || line == "" {
+			words = append(words, field.String())
+			field.Reset()
+		}
+	}
+	return words, nil
 }
 
 // Join builds a command line string from an argument list by joining
@@ -24,9 +66,6 @@ func Join(words []string) string {
 	}
 	return buf.String()
 }
-
-var reNeedEscape = regexp.MustCompile(`([^A-Za-z0-9_\-.,:\/@\n])`)
-var reLF = regexp.MustCompile(`\n`)
 
 // Escape escapes a string so that it can be safely used in a Bourne shell command line.
 // Note that a resulted string should be used unquoted and is not intended for use in double quotes nor in single quotes.
