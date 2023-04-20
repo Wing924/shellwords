@@ -2,10 +2,7 @@ module github.com/Wing924/shellwords
 
 go 1.17
 
-require (
-	github.com/mattn/go-shellwords v1.0.12
-	github.com/stretchr/testify v1.7.0
-)
+require github.com/stretchr/testify v1.7.0
 
 require (
 	github.com/davecgh/go-spew v1.1.0 // indirect

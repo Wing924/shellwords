@@ -1,7 +1,6 @@
 # shellwords
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Build Status](https://travis-ci.org/Wing924/shellwords.svg?branch=master)](https://travis-ci.org/Wing924/shellwords)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Wing924/shellwords)](https://goreportcard.com/report/github.com/Wing924/shellwords)
 [![codecov](https://codecov.io/gh/Wing924/shellwords/branch/master/graph/badge.svg)](https://codecov.io/gh/Wing924/shellwords)
 [![GoDoc](https://godoc.org/github.com/Wing924/shellwords?status.svg)](https://godoc.org/github.com/Wing924/shellwords)
@@ -41,4 +40,4 @@ line := shellwords.Escape("./foo 'a b c'")
 
 ## Thanks
 
-This is based on [go-shellwords](https://github.com/mattn/go-shellwords) and ruby module: [rubysl-shellwords](https://github.com/rubysl/rubysl-shellwords)
+This is based on ruby module: [Shellwords](https://github.com/ruby/shellwords)
